@@ -1,6 +1,6 @@
-FROM BASEIMAGE
+FROM ubuntu:20.04
 
-ENV ARCH amd64
+ARG ARCH=amd64
 
 COPY scripts/hyperkube /hyperkube
 COPY scripts/iptables-wrapper-installer.sh /usr/sbin/iptables-wrapper-installer.sh

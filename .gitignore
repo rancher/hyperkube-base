@@ -1,2 +1,3 @@
 cni-tars/
+cni-bin/
 scripts/iptables-wrapper-installer.sh

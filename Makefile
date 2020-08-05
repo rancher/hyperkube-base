@@ -31,24 +31,21 @@ cni-tars/$(CNI_TARBALL):
 	mkdir -p cni-tars/
 	cd cni-tars/ && curl -sSLO --retry 5 https://storage.googleapis.com/k8s-artifacts-cni/release/${CNI_VERSION}/${CNI_TARBALL}
 
+cni-bin/bin: cni-tars/$(CNI_TARBALL)
+	mkdir -p cni-bin/bin
+	tar -xz -C cni-bin/bin -f "cni-tars/${CNI_TARBALL}"
+
 scripts/iptables-wrapper-installer.sh:
 	mkdir -p scripts/
 	cd scripts/ && curl -sSLO --retry 5 https://raw.githubusercontent.com/kubernetes-sigs/iptables-wrappers/${IPTWI_VERSION}/iptables-wrapper-installer.sh && chmod +x iptables-wrapper-installer.sh
 
 clean:
 	rm -rf cni-tars/
+	rm -rf cni-bin/
 	rm -f scripts/iptables-wrapper-installer.sh
 
-build: cni-tars/$(CNI_TARBALL) scripts/iptables-wrapper-installer.sh
-	cp Dockerfile $(TEMP_DIR)
-	cp -r scripts $(TEMP_DIR)
-	cd $(TEMP_DIR) && sed -i.back "s|BASEIMAGE|$(BASEIMAGE)|g" Dockerfile
-
-	mkdir -p ${TEMP_DIR}/cni-bin/bin
-	tar -xz -C ${TEMP_DIR}/cni-bin/bin -f "cni-tars/${CNI_TARBALL}"
-
-	docker build --pull --build-arg ARCH=${ARCH} -t $(IMAGE):$(TAG)-linux-$(ARCH) $(TEMP_DIR)
-	rm -rf $(TEMP_DIR)
+build: clean cni-bin/bin scripts/iptables-wrapper-installer.sh
+	docker build --pull --build-arg ARCH=${ARCH} -t $(IMAGE):$(TAG)-linux-$(ARCH) .
 
 push: build
 	docker push $(IMAGE):$(TAG)-$(ARCH)
