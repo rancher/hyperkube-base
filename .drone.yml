@@ -1,7 +1,11 @@
 ---
 kind: pipeline
 name: default-linux-amd64
-  
+
+platform:
+  os: linux
+  arch: amd64
+
 steps:
 - name: prepare-amd64-binaries
   image: ubuntu:20.04
@@ -57,7 +61,11 @@ steps:
 ---
 kind: pipeline
 name: default-linux-arm64
-  
+
+platform:
+  os: linux
+  arch: arm64
+
 steps:
 - name: prepare-arm64-binaries
   image: ubuntu:20.04
