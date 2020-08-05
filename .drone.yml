@@ -54,3 +54,97 @@ steps:
   when:
     event:
     - tag
+
+---
+kind: pipeline
+name: default-linux-arm64
+  
+steps:
+- name: prepare-arm64-binaries
+  image: ubuntu:20.04
+  commands:
+  - apt-get -y update && apt-get -y install make curl tar
+  - make ARCH=arm64 cni-bin/bin && make ARCH=arm64 scripts/iptables-wrapper-installer.sh
+  when:
+    event:
+    - push
+    - pull_request
+    - tag
+
+- name: docker-publish-head
+  image: plugins/docker
+  settings:
+    build_args:
+    - ARCH=arm64
+    - VERSION=${DRONE_BRANCH/release\//}-${DRONE_BUILD_NUMBER}-head
+    custom_dns: 1.1.1.1
+    dockerfile: Dockerfile
+    tag: ${DRONE_BRANCH/release\//}-head-linux-arm64
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    repo: rancher/hyperkube-base
+  when:
+    ref:
+      include:
+      - "refs/heads/master"
+      - "refs/heads/release/v*"
+    event:
+    - push
+
+- name: docker-publish
+  image: plugins/docker
+  settings:
+    build_args:
+    - ARCH=arm64
+    - "VERSION=${DRONE_TAG}"
+    context: package/
+    custom_dns: 1.1.1.1
+    dockerfile: Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    repo: rancher/hyperkube-base
+    tag: "${DRONE_TAG}-linux-arm64"
+  when:
+    event:
+    - tag
+
+---
+kind: pipeline
+name: manifest
+
+steps:
+- name: push-head-manifest
+  image: plugins/manifest
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    spec: manifest.tmpl
+  when:
+    ref:
+      include:
+      - "refs/heads/master"
+      - "refs/heads/release/v*"
+    event:
+    - push
+
+- name: push-manifest
+  image: plugins/manifest
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    spec: manifest.tmpl
+  when:
+    event:
+    - tag
+
+depends_on:
+- default-linux-amd64
+- default-linux-arm64
