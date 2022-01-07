@@ -4,7 +4,7 @@ ALL_ARCH = amd64 arm64
 IMAGE ?= docker.io/oats87/hyperkube-base
 TAG ?= v0.0.1
 
-BASEIMAGE ?= ubuntu:20.04
+BASEIMAGE ?= ubuntu:21.10
 
 CNI_VERSION ?= v0.8.6
 IPTWI_VERSION ?= master
