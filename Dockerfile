@@ -45,6 +45,7 @@ RUN echo CACHEBUST>/dev/null \
     gnupg1 \
     iproute2 \
     ipset \
+    iptables \
     iputils-ping \
     jq \
     kmod \
