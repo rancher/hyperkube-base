@@ -49,6 +49,7 @@ RUN echo CACHEBUST>/dev/null \
     iputils-ping \
     jq \
     kmod \
+    lsb-release \
     open-iscsi \
     openssh-client \
     procps \
@@ -60,7 +61,8 @@ RUN echo CACHEBUST>/dev/null \
     util-linux \
     xfsprogs \
     zfsutils-linux \
-    && echo "deb [arch=${ARCH}] https://packages.microsoft.com/repos/azure-cli/ focal main" > \
+    && AZ_REPO=$(lsb_release -cs) \
+    && echo "deb [arch=${ARCH}] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" > \
     /etc/apt/sources.list.d/azure-cli.list \
     && curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && apt-get purge gnupg \
