@@ -27,7 +27,7 @@ RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 RUN echo CACHEBUST>/dev/null \
     && apt-get update \
     && apt-get upgrade -y \
-    && apt-get autoclean
+    && apt-get autoclean \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     apt-transport-https \
     arptables \
