@@ -6,7 +6,8 @@ TAG ?= v0.0.1
 
 BASEIMAGE ?= ubuntu:22.04
 
-CNI_VERSION ?= v0.8.6
+CNI_VERSION ?= v1.3.0
+FLANNEL_CNI_VERSION ?= v1.2.0
 IPTWI_VERSION ?= master
 
 TEMP_DIR:=$(shell mktemp -d)
@@ -29,11 +30,13 @@ all-push: all-push-images push-manifest
 
 cni-tars/$(CNI_TARBALL):
 	mkdir -p cni-tars/
-	cd cni-tars/ && curl -sSLO --retry 5 https://storage.googleapis.com/k8s-artifacts-cni/release/${CNI_VERSION}/${CNI_TARBALL}
+	cd cni-tars/ && curl -sSLO --retry 5 https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/${CNI_TARBALL}
 
 cni-bin/bin: cni-tars/$(CNI_TARBALL)
 	mkdir -p cni-bin/bin
 	tar -xz -C cni-bin/bin -f "cni-tars/${CNI_TARBALL}"
+	curl -sSL --retry 5 -o cni-bin/bin/flannel https://github.com/flannel-io/cni-plugin/releases/download/${FLANNEL_CNI_VERSION}/flannel-$(ARCH)
+	chmod +x cni-bin/bin/flannel
 
 scripts/iptables-wrapper-installer.sh:
 	mkdir -p scripts/
