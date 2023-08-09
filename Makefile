@@ -8,7 +8,7 @@ BASEIMAGE ?= ubuntu:22.04
 
 CNI_VERSION ?= v1.3.0
 FLANNEL_CNI_VERSION ?= v1.2.0
-IPTWI_VERSION ?= master
+IPTWI_VERSION ?= v2
 
 TEMP_DIR:=$(shell mktemp -d)
 
