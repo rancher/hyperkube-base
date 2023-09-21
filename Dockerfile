@@ -1,6 +1,7 @@
 FROM ubuntu:22.04
 
 ARG ARCH=amd64
+ENV SYSTEMD_IGNORE_CHROOT=yes
 
 COPY scripts/hyperkube /hyperkube
 COPY scripts/iptables-wrapper-installer.sh /usr/sbin/iptables-wrapper-installer.sh
