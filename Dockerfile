@@ -80,6 +80,4 @@ RUN echo CACHEBUST>/dev/null \
 
 RUN /usr/sbin/iptables-wrapper-installer.sh
 
-COPY cni-bin/bin /opt/cni/bin
-
 ENTRYPOINT ["/hyperkube"]
