@@ -58,7 +58,6 @@ RUN echo CACHEBUST>/dev/null \
     nfs-common \
     samba-common \
     socat \
-    systemd \
     udev \
     util-linux \
     xfsprogs \
