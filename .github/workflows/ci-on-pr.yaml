@@ -1,0 +1,51 @@
+name: CI on Push and Pull Request
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  test-prepare-binaries:
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        os: [linux]
+        arch: [ amd64, arm64 ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        run: |
+          make scripts/iptables-wrapper-installer.sh
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: rancher/hyperkube-base
+          flavor: |
+            latest=false
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: "${{ steps.meta.outputs.tags }}"
+          platforms: "${{ matrix.os }}/${{ matrix.arch }}"
+          labels: "${{ steps.meta.outputs.labels }}"
+          build-args: |
+            ARCH="${{ matrix.arch }}"
