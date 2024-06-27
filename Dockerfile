@@ -79,7 +79,7 @@ RUN echo CACHEBUST>/dev/null \
 
 # iptables-wrapper-installer.sh uses `iptables-nft --version` to check whether iptables-nft exists, iptables-nft returns
 # the error "protocol not supported" when being invoked in an emulated enviroment whose arch (for example, arm64)
-# is differnt from the host (amd64). So we do the check ourselves before running iptables-wrapper-installer.sh.
+# is different from the host (amd64). So we do the check ourselves before running iptables-wrapper-installer.sh.
 RUN which iptables-legacy && which iptables-nft
 RUN /usr/sbin/iptables-wrapper-installer.sh --no-sanity-check
 
