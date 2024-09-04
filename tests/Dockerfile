@@ -1,0 +1,6 @@
+ARG IMAGE
+FROM ${IMAGE}
+
+COPY tests/test.sh /
+
+ENTRYPOINT []

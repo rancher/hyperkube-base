@@ -1,7 +1,7 @@
 ARCH ?=amd64
 ALL_ARCH = amd64 arm64
 
-IMAGE ?= docker.io/oats87/hyperkube-base
+IMAGE ?= docker.io/rancher/hyperkube-base
 TAG ?= v0.0.1
 
 BASEIMAGE ?= ubuntu:22.04
@@ -34,6 +34,10 @@ build: clean scripts/iptables-wrapper-installer.sh
 
 push: build
 	docker push $(IMAGE):$(TAG)-$(ARCH)
+
+test: clean scripts/iptables-wrapper-installer.sh
+	IMAGE=test-hyperkube-base DEBUG=true \
+		./tests/run-wrapper-tests.sh bci
 
 .PHONY: all build push clean all-build all-push-images all-push
 
