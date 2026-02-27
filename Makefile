@@ -4,7 +4,7 @@ ALL_ARCH = amd64 arm64
 IMAGE ?= docker.io/rancher/hyperkube-base
 TAG ?= v0.0.1
 
-BASEIMAGE ?= ubuntu:22.04
+BASEIMAGE ?= ubuntu:24.04
 IPTWI_VERSION ?= v2
 TEMP_DIR:=$(shell mktemp -d)
 
